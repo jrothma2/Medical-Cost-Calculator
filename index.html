@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Cost Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .label-hint {
+            color: #888;
+            font-size: 0.85em;
+            font-weight: 400;
+            margin-left: 5px;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="number"]:invalid,
+        input[type="text"]:invalid {
+            border-color: #ff6b6b;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #e9ecef;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+            color: #555;
+        }
+
+        .calculate-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .calculate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-button:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result-label {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group.error input,
+        .form-group.error select {
+            border-color: #ff6b6b;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Medical Cost Calculator</h1>
+        <p class="subtitle">Enter your information to calculate predicted medical costs</p>
+
+        <form id="costCalculatorForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="age">Age <span class="label-hint">(In years)</span></label>
+                    <input type="number" id="age" name="age" min="0" required>
+                    <span class="error-message">Please enter a valid age</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="income">Income <span class="label-hint">(In dollars)</span></label>
+                    <input type="number" id="income" name="income" min="0" step="0.01" required>
+                    <span class="error-message">Please enter a valid income</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="employmentStatus">Employment Status</label>
+                    <select id="employmentStatus" name="employmentStatus" required>
+                        <option value="">Select...</option>
+                        <option value="Retired">Retired</option>
+                        <option value="Self-Employed">Self-Employed</option>
+                        <option value="Employed">Employed</option>
+                        <option value="Unemployed">Unemployed</option>
+                    </select>
+                    <span class="error-message">Please select an employment status</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="bmi">BMI <span class="label-hint">(Nonnegative number)</span></label>
+                    <input type="number" id="bmi" name="bmi" min="0" step="0.01" required>
+                    <span class="error-message">Please enter a nonnegative BMI</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="smokerStatus">Smoker Status</label>
+                    <select id="smokerStatus" name="smokerStatus" required>
+                        <option value="">Select...</option>
+                        <option value="Current">Current</option>
+                        <option value="Former">Former</option>
+                        <option value="Never">Never</option>
+                    </select>
+                    <span class="error-message">Please select a smoker status</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="visitsLastYear">Visits Last Year <span class="label-hint">(Nonnegative number)</span></label>
+                    <input type="number" id="visitsLastYear" name="visitsLastYear" min="0" required>
+                    <span class="error-message">Please enter a nonnegative number</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="daysHospitalized">Days Hospitalized Over Past 3 Years <span class="label-hint">(In days)</span></label>
+                    <input type="number" id="daysHospitalized" name="daysHospitalized" min="0" required>
+                    <span class="error-message">Please enter a valid number of days</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="medicationCount">Medication Count <span class="label-hint">(Nonnegative number)</span></label>
+                    <input type="number" id="medicationCount" name="medicationCount" min="0" required>
+                    <span class="error-message">Please enter a nonnegative number</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="systolicBP">Systolic BP <span class="label-hint">(Integer number)</span></label>
+                    <input type="number" id="systolicBP" name="systolicBP" step="1" required>
+                    <span class="error-message">Please enter a valid integer</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="riskScore">Risk Score <span class="label-hint">(Scale of 0 to 1, step 0.01)</span></label>
+                    <input type="number" id="riskScore" name="riskScore" min="0" max="1" step="0.01" required>
+                    <span class="error-message">Please enter a value between 0 and 1</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="procedureImagingCount">Procedure Imaging Count <span class="label-hint">(Nonnegative number)</span></label>
+                    <input type="number" id="procedureImagingCount" name="procedureImagingCount" min="0" required>
+                    <span class="error-message">Please enter a nonnegative number</span>
+                </div>
+            </div>
+
+            <div>
+                <label style="margin-bottom: 15px; display: block; font-weight: 600; color: #333;">Medical Conditions</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="hypertension" name="hypertension">
+                        <label for="hypertension">Hypertension</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="diabetes" name="diabetes">
+                        <label for="diabetes">Diabetes</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="asthma" name="asthma">
+                        <label for="asthma">Asthma</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="copd" name="copd">
+                        <label for="copd">COPD</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cardiovascularDisease" name="cardiovascularDisease">
+                        <label for="cardiovascularDisease">Cardiovascular Disease</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cancerHistory" name="cancerHistory">
+                        <label for="cancerHistory">Cancer History</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="kidneyDisease" name="kidneyDisease">
+                        <label for="kidneyDisease">Kidney Disease</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="liverDisease" name="liverDisease">
+                        <label for="liverDisease">Liver Disease</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="arthritis" name="arthritis">
+                        <label for="arthritis">Arthritis</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="mentalHealth" name="mentalHealth">
+                        <label for="mentalHealth">Mental Health</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="calculate-button">Calculate Medical Cost</button>
+        </form>
+
+        <div class="result-container" id="resultContainer" style="display: none;">
+            <div class="result-label">Predicted Medical Cost</div>
+            <div class="result-value" id="resultValue">$0.00</div>
+        </div>
+    </div>
+
+    <script>
+        // Base Intercept
+        const BASE_INTERCEPT = 1735.7284431375;
+
+        // Coefficients object - extracted from model
+        const COEFFICIENTS = {
+            age: 33.0989641359,
+            income: -0.0006315022,
+            employmentStatus: {
+                Retired: -58.7369817661,
+                'Self-Employed': -36.8511236055,
+                Employed: 0,  // Reference category
+                Unemployed: 33.7064259918
+            },
+            bmi: 35.0858522910,
+            smokerStatus: {
+                Current: 0,  // Reference category
+                Former: -1483.2633152675,
+                Never: -1872.7676903182
+            },
+            visitsLastYear: 133.4405979197,
+            daysHospitalized: 501.0115429831,
+            medicationCount: -15.9895471108,
+            systolicBP: -1.7679153761,
+            riskScore: -1383.1977987593,
+            hypertension: 1240.3351220994,
+            diabetes: 1185.8650988447,
+            asthma: 1055.1284916807,
+            copd: 1214.0117203013,
+            cardiovascularDisease: 1166.3416367370,
+            cancerHistory: 1293.9218957986,
+            kidneyDisease: 1141.2099028237,
+            liverDisease: 1182.2040999081,
+            arthritis: 1194.2648845092,
+            mentalHealth: 1192.3953245495,
+            procedureImagingCount: 26.6340946834
+        };
+
+        // Calculate medical cost
+        function calculateCost(formData) {
+            let totalCost = BASE_INTERCEPT;
+
+            // Age
+            totalCost += parseFloat(formData.age) * COEFFICIENTS.age;
+
+            // Income
+            totalCost += parseFloat(formData.income) * COEFFICIENTS.income;
+
+            // Employment Status
+            if (formData.employmentStatus && COEFFICIENTS.employmentStatus[formData.employmentStatus] !== undefined) {
+                totalCost += COEFFICIENTS.employmentStatus[formData.employmentStatus];
+            }
+
+            // BMI
+            totalCost += parseFloat(formData.bmi) * COEFFICIENTS.bmi;
+
+            // Smoker Status
+            if (formData.smokerStatus && COEFFICIENTS.smokerStatus[formData.smokerStatus] !== undefined) {
+                totalCost += COEFFICIENTS.smokerStatus[formData.smokerStatus];
+            }
+
+            // Visits Last Year
+            totalCost += parseFloat(formData.visitsLastYear) * COEFFICIENTS.visitsLastYear;
+
+            // Days Hospitalized
+            totalCost += parseFloat(formData.daysHospitalized) * COEFFICIENTS.daysHospitalized;
+
+            // Medication Count
+            totalCost += parseFloat(formData.medicationCount) * COEFFICIENTS.medicationCount;
+
+            // Systolic BP
+            totalCost += parseFloat(formData.systolicBP) * COEFFICIENTS.systolicBP;
+
+            // Risk Score
+            totalCost += parseFloat(formData.riskScore) * COEFFICIENTS.riskScore;
+
+            // Procedure Imaging Count
+            totalCost += parseFloat(formData.procedureImagingCount) * COEFFICIENTS.procedureImagingCount;
+
+            // Medical Conditions (checkboxes - 1 if checked, 0 if unchecked)
+            totalCost += (formData.hypertension ? 1 : 0) * COEFFICIENTS.hypertension;
+            totalCost += (formData.diabetes ? 1 : 0) * COEFFICIENTS.diabetes;
+            totalCost += (formData.asthma ? 1 : 0) * COEFFICIENTS.asthma;
+            totalCost += (formData.copd ? 1 : 0) * COEFFICIENTS.copd;
+            totalCost += (formData.cardiovascularDisease ? 1 : 0) * COEFFICIENTS.cardiovascularDisease;
+            totalCost += (formData.cancerHistory ? 1 : 0) * COEFFICIENTS.cancerHistory;
+            totalCost += (formData.kidneyDisease ? 1 : 0) * COEFFICIENTS.kidneyDisease;
+            totalCost += (formData.liverDisease ? 1 : 0) * COEFFICIENTS.liverDisease;
+            totalCost += (formData.arthritis ? 1 : 0) * COEFFICIENTS.arthritis;
+            totalCost += (formData.mentalHealth ? 1 : 0) * COEFFICIENTS.mentalHealth;
+
+            return totalCost;
+        }
+
+        // Validation functions
+        function validateForm(formData) {
+            let isValid = true;
+            const formGroups = document.querySelectorAll('.form-group');
+
+            // Remove previous error states
+            formGroups.forEach(group => group.classList.remove('error'));
+
+            // Validate Age
+            if (!formData.age || parseFloat(formData.age) < 0) {
+                document.querySelector('#age').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Income
+            if (!formData.income || parseFloat(formData.income) < 0) {
+                document.querySelector('#income').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Employment Status
+            if (!formData.employmentStatus) {
+                document.querySelector('#employmentStatus').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate BMI
+            if (formData.bmi === '' || parseFloat(formData.bmi) < 0) {
+                document.querySelector('#bmi').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Smoker Status
+            if (!formData.smokerStatus) {
+                document.querySelector('#smokerStatus').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Visits Last Year
+            if (formData.visitsLastYear === '' || parseFloat(formData.visitsLastYear) < 0) {
+                document.querySelector('#visitsLastYear').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Days Hospitalized
+            if (formData.daysHospitalized === '' || parseFloat(formData.daysHospitalized) < 0) {
+                document.querySelector('#daysHospitalized').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Medication Count
+            if (formData.medicationCount === '' || parseFloat(formData.medicationCount) < 0) {
+                document.querySelector('#medicationCount').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Systolic BP
+            if (!formData.systolicBP || !Number.isInteger(parseFloat(formData.systolicBP))) {
+                document.querySelector('#systolicBP').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Risk Score
+            const riskScore = parseFloat(formData.riskScore);
+            if (formData.riskScore === '' || riskScore < 0 || riskScore > 1) {
+                document.querySelector('#riskScore').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Validate Procedure Imaging Count
+            if (formData.procedureImagingCount === '' || parseFloat(formData.procedureImagingCount) < 0) {
+                document.querySelector('#procedureImagingCount').closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Form submission handler
+        document.getElementById('costCalculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = {
+                age: document.getElementById('age').value,
+                income: document.getElementById('income').value,
+                employmentStatus: document.getElementById('employmentStatus').value,
+                bmi: document.getElementById('bmi').value,
+                smokerStatus: document.getElementById('smokerStatus').value,
+                visitsLastYear: document.getElementById('visitsLastYear').value,
+                daysHospitalized: document.getElementById('daysHospitalized').value,
+                medicationCount: document.getElementById('medicationCount').value,
+                systolicBP: document.getElementById('systolicBP').value,
+                riskScore: document.getElementById('riskScore').value,
+                procedureImagingCount: document.getElementById('procedureImagingCount').value,
+                hypertension: document.getElementById('hypertension').checked,
+                diabetes: document.getElementById('diabetes').checked,
+                asthma: document.getElementById('asthma').checked,
+                copd: document.getElementById('copd').checked,
+                cardiovascularDisease: document.getElementById('cardiovascularDisease').checked,
+                cancerHistory: document.getElementById('cancerHistory').checked,
+                kidneyDisease: document.getElementById('kidneyDisease').checked,
+                liverDisease: document.getElementById('liverDisease').checked,
+                arthritis: document.getElementById('arthritis').checked,
+                mentalHealth: document.getElementById('mentalHealth').checked
+            };
+
+            // Validate form
+            if (!validateForm(formData)) {
+                return;
+            }
+
+            // Calculate cost
+            const cost = calculateCost(formData);
+
+            // Display result
+            document.getElementById('resultValue').textContent = '$' + cost.toFixed(2);
+            document.getElementById('resultContainer').style.display = 'block';
+
+            // Scroll to result
+            document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
+</body>
+</html>

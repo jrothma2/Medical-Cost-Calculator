@@ -72,6 +72,15 @@
             margin-left: 5px;
         }
 
+        .field-description {
+            color: #666;
+            font-size: 0.85em;
+            font-style: italic;
+            margin-top: 4px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
         input[type="number"],
         input[type="text"],
         select {
@@ -224,18 +233,21 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label for="age">Age <span class="label-hint">(In years)</span></label>
+                    <div class="field-description">Age of the insurance beneficiary (in years)</div>
                     <input type="number" id="age" name="age" min="0" required>
                     <span class="error-message">Please enter a valid age</span>
                 </div>
 
                 <div class="form-group">
                     <label for="income">Income <span class="label-hint">(In dollars)</span></label>
+                    <div class="field-description">Annual income of the beneficiary</div>
                     <input type="number" id="income" name="income" min="0" step="0.01" required>
                     <span class="error-message">Please enter a valid income</span>
                 </div>
 
                 <div class="form-group">
                     <label for="employmentStatus">Employment Status</label>
+                    <div class="field-description">Current employment status of the beneficiary (Employed, Retired, Self-employed, or Unemployed)</div>
                     <select id="employmentStatus" name="employmentStatus" required>
                         <option value="">Select...</option>
                         <option value="Retired">Retired</option>
@@ -248,12 +260,14 @@
 
                 <div class="form-group">
                     <label for="bmi">BMI <span class="label-hint">(Nonnegative number)</span></label>
+                    <div class="field-description">Body Mass Index, a measure of body weight relative to height (kg/m²)</div>
                     <input type="number" id="bmi" name="bmi" min="0" step="0.01" required>
                     <span class="error-message">Please enter a nonnegative BMI</span>
                 </div>
 
                 <div class="form-group">
                     <label for="smokerStatus">Smoker Status</label>
+                    <div class="field-description">Categorical variable about the status of the person's smoking habit (Current, Former, Never)</div>
                     <select id="smokerStatus" name="smokerStatus" required>
                         <option value="">Select...</option>
                         <option value="Current">Current</option>
@@ -265,36 +279,42 @@
 
                 <div class="form-group">
                     <label for="visitsLastYear">Visits Last Year <span class="label-hint">(Nonnegative number)</span></label>
+                    <div class="field-description">Number of medical visits in the previous year</div>
                     <input type="number" id="visitsLastYear" name="visitsLastYear" min="0" required>
                     <span class="error-message">Please enter a nonnegative number</span>
                 </div>
 
                 <div class="form-group">
                     <label for="daysHospitalized">Days Hospitalized Over Past 3 Years <span class="label-hint">(In days)</span></label>
+                    <div class="field-description">Total days spent hospitalized over the past 3 years</div>
                     <input type="number" id="daysHospitalized" name="daysHospitalized" min="0" required>
                     <span class="error-message">Please enter a valid number of days</span>
                 </div>
 
                 <div class="form-group">
                     <label for="medicationCount">Medication Count <span class="label-hint">(Nonnegative number)</span></label>
+                    <div class="field-description">Number of ongoing medications</div>
                     <input type="number" id="medicationCount" name="medicationCount" min="0" required>
                     <span class="error-message">Please enter a nonnegative number</span>
                 </div>
 
                 <div class="form-group">
                     <label for="systolicBP">Systolic BP <span class="label-hint">(Integer number)</span></label>
+                    <div class="field-description">Systolic blood pressure measurement (mmHg)</div>
                     <input type="number" id="systolicBP" name="systolicBP" step="1" required>
                     <span class="error-message">Please enter a valid integer</span>
                 </div>
 
                 <div class="form-group">
                     <label for="riskScore">Risk Score <span class="label-hint">(Scale of 0 to 1, step 0.01)</span></label>
+                    <div class="field-description">Composite health risk assessment score</div>
                     <input type="number" id="riskScore" name="riskScore" min="0" max="1" step="0.01" required>
                     <span class="error-message">Please enter a value between 0 and 1</span>
                 </div>
 
                 <div class="form-group">
                     <label for="procedureImagingCount">Procedure Imaging Count <span class="label-hint">(Nonnegative number)</span></label>
+                    <div class="field-description">Count of imaging procedures (e.g., X-rays, MRIs, CT scans)</div>
                     <input type="number" id="procedureImagingCount" name="procedureImagingCount" min="0" required>
                     <span class="error-message">Please enter a nonnegative number</span>
                 </div>
@@ -305,43 +325,43 @@
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <input type="checkbox" id="hypertension" name="hypertension">
-                        <label for="hypertension">Hypertension</label>
+                        <label for="hypertension">Hypertension <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Presence of high blood pressure)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="diabetes" name="diabetes">
-                        <label for="diabetes">Diabetes</label>
+                        <label for="diabetes">Diabetes <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Diagnosed diabetes)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="asthma" name="asthma">
-                        <label for="asthma">Asthma</label>
+                        <label for="asthma">Asthma <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Diagnosed asthma)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="copd" name="copd">
-                        <label for="copd">COPD</label>
+                        <label for="copd">COPD <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Chronic Obstructive Pulmonary Disease)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="cardiovascularDisease" name="cardiovascularDisease">
-                        <label for="cardiovascularDisease">Cardiovascular Disease</label>
+                        <label for="cardiovascularDisease">Cardiovascular Disease <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Heart or vascular disease)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="cancerHistory" name="cancerHistory">
-                        <label for="cancerHistory">Cancer History</label>
+                        <label for="cancerHistory">Cancer History <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(History of cancer diagnosis)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="kidneyDisease" name="kidneyDisease">
-                        <label for="kidneyDisease">Kidney Disease</label>
+                        <label for="kidneyDisease">Kidney Disease <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Chronic kidney disease)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="liverDisease" name="liverDisease">
-                        <label for="liverDisease">Liver Disease</label>
+                        <label for="liverDisease">Liver Disease <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Chronic liver disease)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="arthritis" name="arthritis">
-                        <label for="arthritis">Arthritis</label>
+                        <label for="arthritis">Arthritis <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Diagnosed arthritis)</span></label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="mentalHealth" name="mentalHealth">
-                        <label for="mentalHealth">Mental Health</label>
+                        <label for="mentalHealth">Mental Health <span style="font-weight: 400; font-style: italic; color: #666; font-size: 0.9em;">(Mental health condition diagnosis)</span></label>
                     </div>
                 </div>
             </div>
